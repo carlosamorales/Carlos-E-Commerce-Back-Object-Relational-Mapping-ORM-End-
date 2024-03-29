@@ -44,19 +44,21 @@ router.post('/', async (req, res) => {
 // Update a product by id
 router.put('/:id', async (req, res) => {
   try {
-    const [rowsAffected, [updatedProduct]] = await Product.update(req.body, {
-      where: { id: req.params.id },
-      returning: true // Return the updated product
+    const [rowsAffected] = await Product.update(req.body, {
+      where: { id: req.params.id }
     });
     if (rowsAffected === 0) {
       return res.status(404).json({ error: 'Product not found' });
     }
+    // Fetch the updated product separately
+    const updatedProduct = await Product.findByPk(req.params.id);
     res.json(updatedProduct);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 // Delete a product by id
 router.delete('/:id', async (req, res) => {
@@ -67,11 +69,13 @@ router.delete('/:id', async (req, res) => {
     if (rowsAffected === 0) {
       return res.status(404).json({ error: 'Product not found' });
     }
-    res.status(204).end(); // No content to send
+    // Respond with 200 OK and success message
+    res.status(200).json({ message: 'Product has been removed successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 module.exports = router;
