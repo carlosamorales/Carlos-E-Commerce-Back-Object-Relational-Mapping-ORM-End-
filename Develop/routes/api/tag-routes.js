@@ -67,7 +67,7 @@ router.delete('/:id', async (req, res) => {
     if (rowsAffected === 0) {
       return res.status(404).json({ error: 'Tag not found' });
     }
-    res.status(204).end(); // No content to send
+    res.status(200).json({ message: 'Tag successfully removed' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
